@@ -11,10 +11,10 @@
 
 ## 2. Process fMRI and dMRI data
 ### (1) Process fMRI data.
-(a) Run “Process_fMRI.bat”, or run“prep_fMRI.py” and “merge.py” sequentially.
-  This script will process all fMRI-related files in the “raw_data” directory and generate two output files: “output_temp.mat” and “output_final.mat” in the “Processed_fMRI” directory.
+#### (a) Run “Process_fMRI.bat”, or run“prep_fMRI.py” and “merge.py” sequentially.
+(This script will process all fMRI-related files in the “raw_data” directory and generate two output files: “output_temp.mat” and “output_final.mat” in the “Processed_fMRI” directory.
 “output_temp.mat” contains the processed samples currently stored in “raw_data”.
-“output_final.mat” contains all processed data, including both the samples currently in “raw_data” and those processed previously.
+“output_final.mat” contains all processed data, including both the samples currently in “raw_data” and those processed previously.)
 
 ### (2) Process dMRI data.
 #### (a) Download and install MRtrix3.

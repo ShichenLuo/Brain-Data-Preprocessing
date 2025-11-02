@@ -5,7 +5,20 @@ import re, nilearn
 from nilearn import image, input_data
 from scipy.io import savemat
 import numpy as np
+
+
+
 atlas = 'AAL.nii'
+new_name = 'newfilename.txt'
+keys = ['ID', 'REST2', 'EMOTION', 'GAMBLING', 'LANGUAGE', 'MOTOR', 'RELATIONAL', 'SOCIAL', 'WM']
+output = {i:[] for i in keys}
+target_directory = 'data\HCP_fMRI'
+if os.path.exists(target_directory)==False:
+    os.makedirs(target_directory)
+if os.path.exists('Processed_fMRI')==False:
+    os.makedirs('Processed_fMRI')
+if os.path.exists('Processed_dMRI')==False:
+    os.makedirs('Processed_dMRI')
 
 def extract_and_rename(zip_path, file_name, target_directory, new_name):
     print(f'reading {zip_path}')
@@ -37,10 +50,8 @@ def read_nii(path):
     time_series = time_series.transpose(1,0)
     return time_series
 
-target_directory = 'data\HCP_fMRI'
-new_name = 'newfilename.txt'
-keys = ['ID', 'REST2', 'EMOTION', 'GAMBLING', 'LANGUAGE', 'MOTOR', 'RELATIONAL', 'SOCIAL', 'WM']
-output = {i:[] for i in keys}
+
+
 count=0
 for Dir,_,file_names in os.walk('raw_data/'): 
     for file_name in file_names:

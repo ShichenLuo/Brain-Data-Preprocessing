@@ -3,6 +3,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+def p(*parts):
+    return os.path.join(*parts)
+
 def process_subject_dir(output_directory,subject_dir,t1_directory,altas_directory):
     print(f"\nProcessing subject in directory: {subject_dir}")
     # === Step 1: Convert DWI and brain mask
@@ -33,12 +36,24 @@ def process_subject_dir(output_directory,subject_dir,t1_directory,altas_director
     # === Step 7: Estimate FOD
     cmd = (f"dwi2response dhollander {output_directory}dwi.mif {output_directory}wm.txt {output_directory}gm.txt {output_directory}csf.txt -mask {output_directory}mask.mif")
     subprocess.run(['bash', '-c', cmd], check=True)
-    cmd = (f"dwi2fod msmt_csd {output_directory}dwi.mif {output_directory}wm.txt {output_directory}wm_fod.mif {output_directory}gm.txt {output_directory}gm.mif\
-                    {output_directory}csf.txt {output_directory}csf.mif -mask {output_directory}mask.mif")
-    cmd = f"dwi2fod msmt_csd {output_directory}dwi_fixed.mif {output_directory}wm.txt {output_directory}wm_fod.mif {output_directory}gm.txt\
-            {output_directory}gm.mif {output_directory}csf.txt csf.mif -mask {output_directory}mask.mif -nthreads 1 -force"
+    # cmd = (f"dwi2fod msmt_csd {output_directory}dwi.mif {output_directory}wm.txt {output_directory}wm_fod.mif {output_directory}gm.txt {output_directory}gm.mif\
+    #                 {output_directory}csf.txt {output_directory}csf.mif -mask {output_directory}mask.mif")
 
-    subprocess.run(['bash', '-c', cmd], check=True)
+    cmd = [
+    "dwi2fod", "msmt_csd",
+    p(output_directory, "dwi.mif"),
+    p(output_directory, "wm.txt"),  p(output_directory, "wm_fod.mif"),
+    p(output_directory, "gm.txt"),  p(output_directory, "gm.mif"),
+    p(output_directory, "csf.txt"), p(output_directory, "csf.mif"),
+    "-mask", p(output_directory, "mask.mif"),
+    "-lmax", "8,0,0",
+    "-nthreads", "1",
+    "-force", "-debug"
+    ]
+
+    # print("CMD ARGS:", cmd)  # inspect the exact paths
+    subprocess.run(cmd, check=True)
+    # subprocess.run(['bash', '-c', cmd], check=True)
 
     # === Step 8: Tractogram and connectome
     subprocess.run(f"tckgen {output_directory}wm_fod.mif {output_directory}tracks.tck -seed_dynamic {output_directory}wm_fod.mif -select 5M -cutoff 0.06 -mask {output_directory}mask.mif", shell=True, check=True)

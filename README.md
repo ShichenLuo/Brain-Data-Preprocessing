@@ -21,7 +21,7 @@
 #### (b) Run “unzip_dMRI.py” to extract the dMRI data.
 #### (c) Launch MSYS2 MINGW64 (MRtrix3 terminal).
 #### (d) In the opened terminal, run the command “python dMRI_to_graph.py”. (The output will be a directory, named according to the processed subject’s ID, genereated within the “Processed_dMRI” directory.)
-#### (5) If the program crashes, delete the directory in “Processed_dMRI” that is named after the unsuccessfully processed subject’s ID.
+#### (e) If the program crashes, delete the directory in “Processed_dMRI” that is named after the unsuccessfully processed subject’s ID.
 
 ### (3) Delete processed data.
 #### Delete successfully processed data from “raw_data” directory.

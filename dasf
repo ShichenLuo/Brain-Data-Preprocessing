@@ -1,0 +1,90 @@
+MRtrix 3.0.5                        mmrrccoonnvveerrtt                        May  8 2025
+
+     mmrrccoonnvveerrtt: part of the MRtrix3 package
+
+SSYYNNOOPPSSIISS
+
+     Perform conversion between different file types and optionally extract a
+     subset of the input image
+
+UUSSAAGGEE
+
+     _m_r_c_o_n_v_e_r_t [ options ] input output
+
+        _i_n_p_u_t        the input image.
+
+        _o_u_t_p_u_t       the output image.
+
+
+DDEESSCCRRIIPPTTIIOONN
+
+     If used correctly, this program can be a very useful workhorse. In
+     addition to converting images between different formats, it can be used to
+     extract specific studies from a data set, extract a specific region of
+     interest, or flip the images. Some of the possible operations are
+     described in more detail below.
+
+     Note that for both the -coord and -axes options, indexing starts from 0
+     rather than 1. E.g. -coord 3 <#> selects volumes (the fourth dimension)
+     from the series; -axes 0,1,2 includes only the three spatial axes in the
+     output image.
+
+     Additionally, for the second input to the -coord option and the -axes
+     option, you can use any valid number sequence in the selection, as well as
+     the 'end' keyword (see the main documentation for details); this can be
+     particularly useful to select multiple coordinates.
+
+     The -vox option is used to change the size of the voxels in the output
+     image as reported in the image header; note however that this does not
+     re-sample the image based on a new voxel size (that is done using the
+     mrgrid command).
+
+     By default, the intensity scaling parameters in the input image header are
+     passed through to the output image header when writing to an integer
+     image, and reset to 0,1 (i.e. no scaling) for floating-point and binary
+     images. Note that the -scaling option will therefore have no effect for
+     floating-point or binary output images.
+
+     The -axes option specifies which axes from the input image will be used to
+     form the output image. This allows the permutation, omission, or addition
+     of axes into the output image. The axes should be supplied as a
+     comma-separated list of axis indices. If an axis from the input image is
+     to be omitted from the output image, it must either already have a size of
+     1, or a single coordinate along that axis must be selected by the user by
+     using the -coord option. Examples are provided further below.
+
+     The -bvalue_scaling option controls an aspect of the import of diffusion
+     gradient tables. When the input diffusion-weighting direction vectors have
+     norms that differ substantially from unity, the b-values will be scaled by
+     the square of their corresponding vector norm (this is how multi-shell
+     acquisitions are frequently achieved on scanner platforms). However in
+     some rare instances, the b-values may be correct, despite the vectors not
+     being of unit norm (or conversely, the b-values may need to be rescaled
+     even though the vectors are close to unit norm). This option allows the
+     user to control this operation and override MRrtix3's automatic detection.
+
+EEXXAAMMPPLLEE  UUSSAAGGEESS
+
+     _E_x_t_r_a_c_t_ _t_h_e_ _f_i_r_s_t_ _v_o_l_u_m_e_ _f_r_o_m_ _a_ _4_D_ _i_m_a_g_e_,_ _a_n_d_ _m_a_k_e_ _t_h_e_ _o_u_t_p_u_t_ _a_ _3_D_ _i_m_a_g_e_:
+       $ mrconvert in.mif -coord 3 0 -axes 0,1,2 out.mif
+     The -coord 3 0 option extracts, from axis number 3 (which is the fourth
+     axis since counting begins from 0; this is the axis that steps across
+     image volumes), only coordinate number 0 (i.e. the first volume). The
+     -axes 0,1,2 ensures that only the first three axes (i.e. the spatial axes)
+     are retained; if this option were not used in this example, then image
+     out.mif would be a 4D image, but it would only consist of a single volume,
+     and mrinfo would report its size along the fourth axis as 1.
+
+     _E_x_t_r_a_c_t_ _s_l_i_c_e_ _n_u_m_b_e_r_ _2_4_ _a_l_o_n_g_ _t_h_e_ _A_P_ _d_i_r_e_c_t_i_o_n_:
+       $ mrconvert volume.mif slice.mif -coord 1 24
+     MRtrix3 uses a RAS (Right-Anterior-Superior) axis convention, and
+     internally reorients images upon loading in order to conform to this as
+     far as possible. So for non-exotic data, axis 1 should correspond
+     (approximately) to the anterior-posterior direction.
+
+     _E_x_t_r_a_c_t_ _o_n_l_y_ _e_v_e_r_y_ _o_t_h_e_r_ _v_o_l_u_m_e_ _f_r_o_m_ _a_ _4_D_ _i_m_a_g_e_:
+       $ mrconvert all.mif every_other.mif -coord 3 1:2:end
+     This example demonstrates two features: Use of the colon syntax to
+     conveniently specify a number sequence (in the format 'start:step:stop');
+     and use of the 'end' keyword to generate this sequence up to the size of
+     the input image along
